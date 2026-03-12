@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": ["ARG PAPERCLIP_VERSION=(?<currentValue>[^\\n]+)"],
+      "depNameTemplate": "paperclipai/paperclip",
+      "datasourceTemplate": "github-releases"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["paperclipai/paperclip"],
+      "automerge": false,
+      "labels": ["dependencies", "paperclip-upgrade"]
+    }
+  ]
+}
