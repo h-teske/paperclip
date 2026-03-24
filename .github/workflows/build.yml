@@ -33,8 +33,11 @@ jobs:
             upstream/Dockerfile
           # Workaround: upstream v2026.318.0 Dockerfile is missing the COPY for
           # packages/plugins/sdk/package.json, but server depends on @paperclipai/plugin-sdk@workspace:*.
+          # Also add a build step for plugin-sdk before the server build.
           if [ -f upstream/packages/plugins/sdk/package.json ]; then
             sed -i 's|COPY packages/adapters/pi-local/package.json packages/adapters/pi-local/|COPY packages/adapters/pi-local/package.json packages/adapters/pi-local/\nCOPY packages/plugins/sdk/package.json packages/plugins/sdk/|' \
+              upstream/Dockerfile
+            sed -i 's|RUN pnpm --filter @paperclipai/ui build|RUN pnpm --filter @paperclipai/plugin-sdk build\nRUN pnpm --filter @paperclipai/ui build|' \
               upstream/Dockerfile
           fi
 
