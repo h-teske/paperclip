@@ -31,6 +31,12 @@ jobs:
           # Relax frozen-lockfile so the build can proceed.
           sed -i 's/pnpm install --frozen-lockfile/pnpm install --no-frozen-lockfile/g' \
             upstream/Dockerfile
+          # Workaround: upstream v2026.318.0 Dockerfile is missing the COPY for
+          # packages/plugins/sdk/package.json, but server depends on @paperclipai/plugin-sdk@workspace:*.
+          if [ -f upstream/packages/plugins/sdk/package.json ]; then
+            sed -i 's|COPY packages/adapters/pi-local/package.json packages/adapters/pi-local/|COPY packages/adapters/pi-local/package.json packages/adapters/pi-local/\nCOPY packages/plugins/sdk/package.json packages/plugins/sdk/|' \
+              upstream/Dockerfile
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
